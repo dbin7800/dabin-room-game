@@ -27,7 +27,7 @@ box(scene,'Back wall',[8,3.2,.16],[0,1.6,-4],wallMat,false,true);box(scene,'Left
 // Low front wall segments leave a broad entry, keeping the camera inside the room.
 box(scene,'Front left',[2.65,1.25,.16],[-2.675,.625,4],wallMat,false,true);box(scene,'Front right',[2.65,1.25,.16],[2.675,.625,4],wallMat,false,true);box(scene,'Front top',[2.7,.55,.16],[0,2.925,4],wallMat,false,true);
 // Studio backdrop, strip lights, ring light, camera stand, stool, softboxes and potted plant.
-box(scene,'Backdrop',[4.6,2.55,.08],[0,1.3,-3.78],mat('#ffe5ed'),false,true);box(scene,'Backdrop roll',[4.8,.12,.12],[0,2.62,-3.72],roseAccent);
+box(scene,'Backdrop',[4.6,2.55,.08],[0,1.3,-3.78],mat('#ffe5ed'),false,true);box(scene,'Backdrop roll',[4.8,.12,.12], [0,2.62,-3.72],mat('#d982a0'));
 box(scene,'Photo platform',[2.7,.16,1.7],[0,.08,-1.9],mat('#bbb7b2'));
 const ring=new THREE.Mesh(new THREE.TorusGeometry(.48,.055,12,48),mat('#f9e7ba',.5));ring.position.set(2.2,1.85,-1.5);scene.add(ring);box(scene,'Ring stand',[.07,1.4,.07],[2.2,.7,-1.5],dark);box(scene,'Ring base',[.75,.06,.55],[2.2,.03,-1.5],dark);
 function softbox(x,z,rot){let g=new THREE.Group();g.position.set(x,1.65,z);g.rotation.y=rot;box(g,'softbox panel',[.78,.98,.12],[0,0,0],white);box(g,'softbox tripod',[.055,1.4,.055],[0,-.72,0],dark);box(g,'softbox foot',[.7,.05,.45],[0,-1.4,0],dark);scene.add(g)}softbox(-2.8,-.8,-.32);softbox(2.85,1.3,.3);
