@@ -19,7 +19,7 @@ scene.add(new THREE.HemisphereLight('#e9f3ff','#596273',2.0));
 const key=new THREE.DirectionalLight('#fff3df',3.2);key.position.set(-4,8,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-8;key.shadow.camera.right=8;key.shadow.camera.top=8;key.shadow.camera.bottom=-8;scene.add(key);
 const fill=new THREE.PointLight('#d9e7ff',24,12);fill.position.set(0,2.7,-2);scene.add(fill);
 const mat=(color,roughness=.82)=>new THREE.MeshStandardMaterial({color,roughness});
-const floorMat=mat('#d8d4ce'),wallMat=mat('#dedfe3'),accentMat=mat('#d6c8bd'),blue=mat('#9bb8d0'),dark=mat('#323748'),skin=mat('#f1d3c2'),hair=mat('#362b30'),catFur=mat('#d4bd9b'),catDark=mat('#574c45'),pink=mat('#ba7381'),white=mat('#f5f2ed');
+const floorMat=mat('#fbf0f2'),wallMat=mat('#f2c1d3'),accentMat=mat('#d6c8bd'),blue=mat('#9bb8d0'),dark=mat('#323748'),skin=mat('#f1d3c2'),hair=mat('#362b30'),catFur=mat('#d4bd9b'),catDark=mat('#574c45'),pink=mat('#ba7381'),white=mat('#f5f2ed');
 function box(parent,name,size,position,material,cast=true,receive=true){let m=new THREE.Mesh(new THREE.BoxGeometry(...size),material);m.name=name;m.position.set(...position);m.castShadow=cast;m.receiveShadow=receive;parent.add(m);return m}
 // Photo studio, measured in metres: clear floor area is exactly 8 x 8 m.
 box(scene,'Photo room floor 8m', [8,.12,8],[0,-.06,0],floorMat,false,true);
@@ -27,12 +27,30 @@ box(scene,'Back wall',[8,3.2,.16],[0,1.6,-4],wallMat,false,true);box(scene,'Left
 // Low front wall segments leave a broad entry, keeping the camera inside the room.
 box(scene,'Front left',[2.65,1.25,.16],[-2.675,.625,4],wallMat,false,true);box(scene,'Front right',[2.65,1.25,.16],[2.675,.625,4],wallMat,false,true);box(scene,'Front top',[2.7,.55,.16],[0,2.925,4],wallMat,false,true);
 // Studio backdrop, strip lights, ring light, camera stand, stool, softboxes and potted plant.
-box(scene,'Backdrop',[4.6,2.55,.08],[0,1.3,-3.78],mat('#e9e7e2'),false,true);box(scene,'Backdrop roll',[4.8,.12,.12],[0,2.62,-3.72],dark);
+box(scene,'Backdrop',[4.6,2.55,.08],[0,1.3,-3.78],mat('#ffe5ed'),false,true);box(scene,'Backdrop roll',[4.8,.12,.12],[0,2.62,-3.72],roseAccent);
 box(scene,'Photo platform',[2.7,.16,1.7],[0,.08,-1.9],mat('#bbb7b2'));
 const ring=new THREE.Mesh(new THREE.TorusGeometry(.48,.055,12,48),mat('#f9e7ba',.5));ring.position.set(2.2,1.85,-1.5);scene.add(ring);box(scene,'Ring stand',[.07,1.4,.07],[2.2,.7,-1.5],dark);box(scene,'Ring base',[.75,.06,.55],[2.2,.03,-1.5],dark);
 function softbox(x,z,rot){let g=new THREE.Group();g.position.set(x,1.65,z);g.rotation.y=rot;box(g,'softbox panel',[.78,.98,.12],[0,0,0],white);box(g,'softbox tripod',[.055,1.4,.055],[0,-.72,0],dark);box(g,'softbox foot',[.7,.05,.45],[0,-1.4,0],dark);scene.add(g)}softbox(-2.8,-.8,-.32);softbox(2.85,1.3,.3);
 box(scene,'Camera tripod',[.07,1.25,.07],[-2.55, .63,1.45],dark);box(scene,'Camera body',[.36,.25,.22],[-2.55,1.38,1.45],dark);let lens=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.14,20),mat('#27374a'));lens.rotation.x=Math.PI/2;lens.position.set(-2.55,1.38,1.28);scene.add(lens);
 box(scene,'Stool seat',[.75,.1,.65],[1.25,.62,.45],blue);for(const x of [.98,1.52])for(const z of [.23,.67])box(scene,'Stool leg',[.055,.58,.055],[x,.31,z],dark);
+// Lovely blush wallpaper accents and a soft heart backdrop.
+const roseAccent=mat('#e59ab3'),creamAccent=mat('#fff2df'),bearFur=mat('#ad8068'),bearMuzzle=mat('#f0d2bc'),bearEye=mat('#3e3036'),cakePink=mat('#ef9fba'),cakeVanilla=mat('#fff0df'),cakeBerry=mat('#bd4968');
+function heartShape(){const s=new THREE.Shape();s.moveTo(0,-.42);s.bezierCurveTo(-.25,-.12,-.85,.28,-.48,.68);s.bezierCurveTo(-.20,.96,0,.72,0,.56);s.bezierCurveTo(0,.72,.20,.96,.48,.68);s.bezierCurveTo(.85,.28,.25,-.12,0,-.42);return s}
+function addHeart(parent,x,y,z,size,material){const h=new THREE.Mesh(new THREE.ShapeGeometry(heartShape()),new THREE.MeshBasicMaterial({color:material.color,side:THREE.DoubleSide}));h.position.set(x,y,z);h.scale.setScalar(size);parent.add(h);return h}
+for(const [hx,hy,hs] of [[-1.72,2.18,.24],[1.72,2.18,.24],[-1.75,.58,.16],[1.75,.58,.16]])addHeart(scene,hx,hy,-3.72,hs,roseAccent);
+// Oversized plush bear posing beside the photo equipment.
+function plushBall(parent,name,position,scale,material){const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),material);m.name=name;m.position.set(...position);m.scale.set(...scale);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+const giantBear=new THREE.Group();giantBear.name='Giant teddy bear photo prop';giantBear.position.set(-3.10,0,2.25);giantBear.scale.setScalar(1.15);giantBear.rotation.y=1.45;scene.add(giantBear);
+plushBall(giantBear,'Teddy body',[0,.68,0],[.55,.65,.43],bearFur);plushBall(giantBear,'Teddy head',[0,1.48,0],[.46,.43,.40],bearFur);
+for(const side of [-1,1]){plushBall(giantBear,'Teddy round ear',[side*.34,1.80,-.01],[.18,.20,.14],bearFur);plushBall(giantBear,'Teddy inner ear',[side*.34,1.80,.115],[.095,.115,.035],roseAccent);plushBall(giantBear,'Teddy arm',[side*.59,.94,.02],[.25,.45,.29],bearFur).rotation.z=side*.25;plushBall(giantBear,'Teddy leg',[side*.31,.23,.06],[.30,.25,.34],bearFur);plushBall(giantBear,'Teddy eye',[side*.17,1.55,.35],[.045,.055,.035],bearEye)}
+plushBall(giantBear,'Teddy muzzle',[0,1.37,.36],[.20,.15,.12],bearMuzzle);plushBall(giantBear,'Teddy nose',[0,1.46,.47],[.075,.055,.045],bearEye);plushBall(giantBear,'Teddy bow left',[-.12,1.04,.36],[.14,.10,.06],roseAccent);plushBall(giantBear,'Teddy bow right',[.12,1.04,.36],[.14,.10,.06],roseAccent);plushBall(giantBear,'Teddy bow knot',[0,1.04,.40],[.07,.07,.05],cakeBerry);addHeart(giantBear,0,.70,.426,.18,roseAccent);
+// A pastel three-tier cake on the existing photo stool.
+const cakeX=1.25,cakeZ=.45;const cakePlate=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.035,40),cakeVanilla);cakePlate.position.set(cakeX,.70,cakeZ);cakePlate.castShadow=true;cakePlate.receiveShadow=true;scene.add(cakePlate);
+function cakeTier(radius,height,y,material,name){const tier=new THREE.Mesh(new THREE.CylinderGeometry(radius*.96,radius,height,32),material);tier.name=name;tier.position.set(cakeX,y,cakeZ);tier.castShadow=true;tier.receiveShadow=true;scene.add(tier);const icing=new THREE.Mesh(new THREE.TorusGeometry(radius*.91,.025,8,32),cakeVanilla);icing.name=name+' icing';icing.position.set(cakeX,y+height*.40,cakeZ);scene.add(icing)}
+cakeTier(.31,.18,.81,cakePink,'Strawberry cake bottom');cakeTier(.25,.18,.99,cakeVanilla,'Vanilla cake middle');cakeTier(.19,.16,1.16,cakePink,'Rose cake top');
+for(let i=0;i<6;i++){const a=i*Math.PI/3,berry=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),cakeBerry);berry.name='Cake berry';berry.scale.set(.8,1.15,.8);berry.position.set(cakeX+Math.cos(a)*.12,1.255,cakeZ+Math.sin(a)*.12);berry.castShadow=true;scene.add(berry)}
+for(const cx of [cakeX-.08,cakeX+.08]){const candle=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.16,10),roseAccent);candle.position.set(cx,1.34,cakeZ);scene.add(candle);const flame=new THREE.Mesh(new THREE.SphereGeometry(.035,10,8),mat('#ffd37b'));flame.scale.set(.7,1.35,.7);flame.position.set(cx,1.445,cakeZ);scene.add(flame)}
+
 function plant(x,z){let pot=new THREE.Mesh(new THREE.CylinderGeometry(.28,.2,.4,16),mat('#ae8170'));pot.position.set(x,.2,z);scene.add(pot);for(let i=0;i<6;i++){let leaf=new THREE.Mesh(new THREE.CapsuleGeometry(.055,.62,4,8),mat(['#7c9a79','#91a886','#66866c'][i%3]));leaf.position.set(x+Math.sin(i*1.05)*.22,.75+Math.cos(i)*.08,z+Math.cos(i*1.05)*.22);leaf.rotation.z=Math.sin(i)*.5;scene.add(leaf)}}plant(3.25,-3.1);plant(-3.3,-3.2);
 // Friendly non-sexualized teen heroine; visual and collision dimensions fit a 0.5 x 0.5 x 1.8m envelope.
 function createGirl(){const root=new THREE.Group();root.name='Dabin player 0.5x0.5x1.8m';const body=new THREE.Group();body.position.y=0;root.add(body);
